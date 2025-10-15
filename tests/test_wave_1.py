@@ -21,6 +21,16 @@ def test_generate_code_uses_valid_letters():
     for letter in result:
         assert letter in valid_letters
 
+def test_generate_code_returns_list():
+    result = generate_code()
+    assert isinstance(result, list)
+
+def test_generate_code_half_or_less_duplicates_over_10_runs():
+    # Run generate_code multiple times and check for at least two different results
+    runs = 10
+    results = {tuple(generate_code()) for _ in range(runs)}
+    assert len(results) > runs / 2  # Expecting more than half of the runs to be unique
+
 # --------------------------test validate_guess------------------------------------
 
 def test_validate_guess_false_length_greater_than_four():
@@ -77,6 +87,28 @@ def test_validate_guess_true_lowercase_letters():
     # Assert
     assert result is True
 
+
+def test_validate_guess_false_length_less_than_four():
+    # Arrange
+    guess = ['R', 'G', 'B']
+
+    # Act
+    result = validate_guess(guess)
+
+    # Assert
+    assert result is False
+
+
+def test_validate_guess_false_non_alpha_characters():
+    # Arrange
+    guess = ['R', '1', '%', 'P']
+
+    # Act
+    result = validate_guess(guess)
+
+    # Assert
+    assert result is False
+
 # --------------------------test check_win_or_lose------------------------------------
 
 def test_check_code_guessed_true():
@@ -95,6 +127,42 @@ def test_check_code_guessed_no_match_false():
     # Arrange
     guess = ['R', 'B', 'B', 'P']
     code = ['R', 'B', 'B', 'O']
+
+    # Act
+    result = check_code_guessed(guess, code)
+
+    # Assert
+    assert result is False
+
+
+def test_check_code_guessed_case_insensitive_match():
+    # Arrange
+    guess = ['r', 'b', 'B', 'p']
+    code = ['R', 'B', 'b', 'P']
+
+    # Act
+    result = check_code_guessed(guess, code)
+
+    # Assert
+    assert result is True
+
+
+def test_check_code_guessed_length_mismatch_false():
+    # Arrange
+    guess = ['R', 'B', 'P']
+    code = ['R', 'B', 'P', 'G']
+
+    # Act
+    result = check_code_guessed(guess, code)
+
+    # Assert
+    assert result is False
+
+
+def test_check_code_guessed_non_list_inputs():
+    # Arrange
+    guess = 'R B B P'
+    code = ['R', 'B', 'B', 'P']
 
     # Act
     result = check_code_guessed(guess, code)
